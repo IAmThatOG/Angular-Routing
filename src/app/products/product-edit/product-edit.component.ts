@@ -1,28 +1,39 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
-import { MessageService } from '../../messages/message.service';
+import { MessageService } from "../../messages/message.service";
 
-import { Product } from '../product';
-import { ProductService } from '../product.service';
+import { Product } from "../product";
+import { ProductService } from "../product.service";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  templateUrl: './product-edit.component.html',
-  styleUrls: ['./product-edit.component.css']
+  templateUrl: "./product-edit.component.html",
+  styleUrls: ["./product-edit.component.css"]
 })
-export class ProductEditComponent {
-  pageTitle = 'Product Edit';
+export class ProductEditComponent implements OnInit {
+  pageTitle = "Product Edit";
   errorMessage: string;
 
   product: Product;
 
-  constructor(private productService: ProductService,
-              private messageService: MessageService) { }
+  constructor(
+    private productService: ProductService,
+    private messageService: MessageService,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    const productId = +this.route.snapshot.paramMap.get('productId');
+    // console.log(productId);
+    this.getProduct(productId);
+  }
 
   getProduct(id: number): void {
-    this.productService.getProduct(id)
+    this.productService
+      .getProduct(id)
       .subscribe(
         (product: Product) => this.onProductRetrieved(product),
-        (error: any) => this.errorMessage = <any>error
+        (error: any) => (this.errorMessage = <any>error)
       );
   }
 
@@ -30,10 +41,10 @@ export class ProductEditComponent {
     this.product = product;
 
     if (!this.product) {
-      this.pageTitle = 'No product found';
+      this.pageTitle = "No product found";
     } else {
       if (this.product.id === 0) {
-        this.pageTitle = 'Add Product';
+        this.pageTitle = "Add Product";
       } else {
         this.pageTitle = `Edit Product: ${this.product.productName}`;
       }
@@ -46,10 +57,12 @@ export class ProductEditComponent {
       this.onSaveComplete(`${this.product.productName} was deleted`);
     } else {
       if (confirm(`Really delete the product: ${this.product.productName}?`)) {
-        this.productService.deleteProduct(this.product.id)
+        this.productService
+          .deleteProduct(this.product.id)
           .subscribe(
-            () => this.onSaveComplete(`${this.product.productName} was deleted`),
-            (error: any) => this.errorMessage = <any>error
+            () =>
+              this.onSaveComplete(`${this.product.productName} was deleted`),
+            (error: any) => (this.errorMessage = <any>error)
           );
       }
     }
@@ -58,20 +71,28 @@ export class ProductEditComponent {
   saveProduct(): void {
     if (true === true) {
       if (this.product.id === 0) {
-        this.productService.createProduct(this.product)
+        this.productService
+          .createProduct(this.product)
           .subscribe(
-            () => this.onSaveComplete(`The new ${this.product.productName} was saved`),
-            (error: any) => this.errorMessage = <any>error
+            () =>
+              this.onSaveComplete(
+                `The new ${this.product.productName} was saved`
+              ),
+            (error: any) => (this.errorMessage = <any>error)
           );
       } else {
-        this.productService.updateProduct(this.product)
+        this.productService
+          .updateProduct(this.product)
           .subscribe(
-            () => this.onSaveComplete(`The updated ${this.product.productName} was saved`),
-            (error: any) => this.errorMessage = <any>error
+            () =>
+              this.onSaveComplete(
+                `The updated ${this.product.productName} was saved`
+              ),
+            (error: any) => (this.errorMessage = <any>error)
           );
       }
     } else {
-      this.errorMessage = 'Please correct the validation errors.';
+      this.errorMessage = "Please correct the validation errors.";
     }
   }
 

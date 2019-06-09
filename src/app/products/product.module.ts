@@ -11,7 +11,9 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     SharedModule,
     RouterModule.forChild([
-      {path: 'products', component: ProductListComponent}
+      { path: 'products', component: ProductListComponent },
+      { path: 'products/:productId', component: ProductDetailComponent },
+      { path: 'products/:productId/edit', component: ProductEditComponent }
     ])
   ],
   declarations: [
@@ -20,4 +22,4 @@ import { SharedModule } from '../shared/shared.module';
     ProductEditComponent
   ]
 })
-export class ProductModule { }
+export class ProductModule {}

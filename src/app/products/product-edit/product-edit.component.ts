@@ -1,17 +1,17 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 
-import { MessageService } from "../../messages/message.service";
+import { MessageService } from '../../messages/message.service';
 
-import { Product } from "../product";
-import { ProductService } from "../product.service";
-import { ActivatedRoute } from '@angular/router';
+import { Product } from '../product';
+import { ProductService } from '../product.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  templateUrl: "./product-edit.component.html",
-  styleUrls: ["./product-edit.component.css"]
+  templateUrl: './product-edit.component.html',
+  styleUrls: ['./product-edit.component.css']
 })
 export class ProductEditComponent implements OnInit {
-  pageTitle = "Product Edit";
+  pageTitle = 'Product Edit';
   errorMessage: string;
 
   product: Product;
@@ -19,13 +19,16 @@ export class ProductEditComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private messageService: MessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    const productId = +this.route.snapshot.paramMap.get('productId');
-    // console.log(productId);
-    this.getProduct(productId);
+    let productId: number;
+    this.route.paramMap.subscribe(paramMap => {
+      productId = +paramMap.get('productId');
+      this.getProduct(productId);
+    });
   }
 
   getProduct(id: number): void {
@@ -41,10 +44,10 @@ export class ProductEditComponent implements OnInit {
     this.product = product;
 
     if (!this.product) {
-      this.pageTitle = "No product found";
+      this.pageTitle = 'No product found';
     } else {
       if (this.product.id === 0) {
-        this.pageTitle = "Add Product";
+        this.pageTitle = 'Add Product';
       } else {
         this.pageTitle = `Edit Product: ${this.product.productName}`;
       }
@@ -92,7 +95,7 @@ export class ProductEditComponent implements OnInit {
           );
       }
     } else {
-      this.errorMessage = "Please correct the validation errors.";
+      this.errorMessage = 'Please correct the validation errors.';
     }
   }
 
@@ -102,5 +105,6 @@ export class ProductEditComponent implements OnInit {
     }
 
     // Navigate back to the product list
+    this.router.navigate(['products']);
   }
 }

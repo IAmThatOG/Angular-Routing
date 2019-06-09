@@ -21,7 +21,7 @@ import { ProductResolverService } from './product-resolver.service';
       {
         path: 'products/:productId/edit',
         component: ProductEditComponent,
-        resolve: { resolvedData: ProductEditComponent }
+        resolve: { resolvedData: ProductEditComponent },
       }
     ])
   ],

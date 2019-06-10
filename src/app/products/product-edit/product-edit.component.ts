@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { MessageService } from '../../messages/message.service';
 
-import { Product } from '../product';
+import { Product, ProductResolved } from '../product';
 import { ProductService } from '../product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -24,21 +24,30 @@ export class ProductEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let productId: number;
-    this.route.paramMap.subscribe(paramMap => {
-      productId = +paramMap.get('productId');
-      this.getProduct(productId);
-    });
+    // let productId: number;
+    // this.route.paramMap.subscribe(paramMap => {
+    //   productId = +paramMap.get('productId');
+    //   this.getProduct(productId);
+    // });
+
+    this.route.data.subscribe(
+      data => {
+        const productResolved: ProductResolved = data['resolvedData'];
+        this.onProductRetrieved(productResolved.product);
+        this.errorMessage = productResolved.error;
+      },
+      error => (this.errorMessage = error)
+    );
   }
 
-  getProduct(id: number): void {
-    this.productService
-      .getProduct(id)
-      .subscribe(
-        (product: Product) => this.onProductRetrieved(product),
-        (error: any) => (this.errorMessage = <any>error)
-      );
-  }
+  // getProduct(id: number): void {
+  //   this.productService
+  //     .getProduct(id)
+  //     .subscribe(
+  //       (product: Product) => this.onProductRetrieved(product),
+  //       (error: any) => (this.errorMessage = <any>error)
+  //     );
+  // }
 
   onProductRetrieved(product: Product): void {
     this.product = product;
